@@ -1,0 +1,18 @@
+%h1 Создадь первичную заявку
+.content
+  = form_for @claim do |form|
+    %table.card
+      %tr
+        %th Направление:
+        %td= select :claim, 'direction_id', Direction.all.collect {|d| [d.name, d.id]}
+      %tr
+        %th Номер:
+        %td= form.text_field :claim_number
+      %tr
+        %th Отделение:
+        %td= select :claim, 'division_id', BranchOfBank.where("open_date is not null").collect {|d| [d.name, d.id]}
+      %tr
+        %th Период:
+        %td= select :claim, 'period_id', Period.where("type_period = 'M' and date_from > to_date('2011-12-31', 'yyyy-mm-dd')").collect {|d| [d.name, d.id]}
+    %br
+    = submit_tag "Создать"

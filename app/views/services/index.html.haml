@@ -1,0 +1,15 @@
+# coding: utf-8
+-@title = "Услуги"
+%h2 Услуги
+.content
+  %table.data
+    %tr
+      %th Название
+      %th Номенклатурный номер
+    - for s in @services
+      %tr 
+        %td= link_to s.name, service_path(s.id)
+        %td= s.part_number
+= will_paginate @services        
+.action
+  = link_to "Добавить", :action => 'new'

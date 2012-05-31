@@ -1,0 +1,26 @@
+# coding: utf-8
+:css
+  td.red {color: #f00; }
+-@title = "Консолидированная заявка"
+%h2 Консолидированная заявка
+%h3 Направление: #{@direction.name}
+%h3 Период: #{@period.name}
+.content
+  %table.data
+    %tr
+      %th Статья бюджета
+      %th Количество
+      %th Сумма по заявке
+      %th Сумма по бюджету
+      %th Отклонение
+      - for cl in @claim_lines
+        %tr
+          %td= link_to cl.article, :action => 'show_claim_lines_by_budget_item', :period_id => @period.id, :direction_id => @direction.id, :budget_item_id => cl.budget_item_id 
+          %td= cl.quantity
+          %td= cl.amount
+          %td= cl.limit
+          - delta = cl.limit - cl.amount.to_f
+          - if delta>0
+            %td= delta
+          - else
+            %td.red= delta

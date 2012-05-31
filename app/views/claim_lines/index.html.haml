@@ -1,0 +1,15 @@
+# coding: utf-8
+-@title = "Материальные ценности"
+%h2 Материальные ценности
+.content
+  %table.data
+    %tr
+      %th Название
+      %th Номенклатурный номер
+    - for a in @assets
+      %tr 
+        %td= link_to a.name, asset_path(a.id)
+        %td= a.part_number
+= will_paginate @assets        
+.action
+  = link_to "Добавить", :action => 'new'

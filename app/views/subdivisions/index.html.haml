@@ -1,0 +1,15 @@
+# coding: utf-8
+-@title = "Подразделения банка"
+%h2 Подразделения
+.content
+  %table.data
+    %tr
+      %th Идентификатор 
+      %th Название
+      %th Код
+    - for sd in @subdivisions
+      %tr 
+        %td= sd.id_division
+        %td= link_to sd.division, subdivision_path(sd.id_division)
+        %td= sd.code_division
+= will_paginate @subdivisions        

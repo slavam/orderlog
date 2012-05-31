@@ -1,0 +1,10 @@
+%h1 Сменить статью бюджета
+.content
+  = form_for @claim_line do |form|
+    %table.card
+      %tr
+        %th Новая статья бюджета:
+        %td= select :claim_line, 'budget_item_id', options_for_select(@budget_items.collect {|bi| [((bi.isleaf == 1 and bi.parent_id != 153 and bi.parent_id != 488) ? '_____':'')+bi.name, bi.id]}, @claim_line.budget_item_id)
+        %td= hidden_field_tag :claim_line_id, @claim_line.id
+    %br
+    = submit_tag "Изменить"

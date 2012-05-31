@@ -1,0 +1,9 @@
+%h1 Создадь группу
+.content
+  = form_for @asset_group do |form|
+    %table.card
+      %tr
+        %th Группа:
+        %td= form.text_field :name    
+    %br
+    = submit_tag "Создать"

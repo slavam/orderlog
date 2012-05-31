@@ -1,0 +1,21 @@
+# coding: utf-8
+%h1 Персонал
+
+.content
+  %table.data
+    %tr
+      %th Табельный номер 
+      %th Фамилия
+      %th Имя
+      %th Отчество
+      %th Должность
+      %th Место работы
+    - for w in @workers
+      %tr 
+        %td= link_to w.tabn, :action => :my_show, :id => w.id_emp
+        %td= w.lastname
+        %td= w.firstname
+        %td= w.soname
+        %td= w.staff
+        %td= w.division
+= will_paginate @workers        

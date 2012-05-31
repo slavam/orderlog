@@ -1,0 +1,24 @@
+# coding: utf-8
+-@title = "История заявки"
+%h2 История заявки
+.content
+  %table.card
+    %tr
+      %th Номер
+      %td= @claim.claim_number
+    %tr  
+      %th Направление
+      %td= @claim.direction.short_name
+    %tr  
+      %th Отделение
+      %td= @claim.branch_of_bank.name
+  %table.data
+    %tr
+      %th Статус
+      %th Дата
+      
+    - for h in @history_lines
+      %tr
+        %td= h.state.state_name.name
+        %td= h.change_at.to_date
+      

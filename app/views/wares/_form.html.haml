@@ -1,0 +1,19 @@
+%h1 Создадь товар
+.content
+  = form_for @ware do |form|
+    %table.card
+      %tr
+        - if @ware_type == 'asset'
+          %th Материальная ценность:
+          %td= select :ware, "asset_id", Asset.all.collect {|a| [ a.name, a.id ] }
+        - else
+          %th Услуга:
+          %td= select :ware, "service_id", Service.all.collect {|s| [ s.name, s.id ] }
+      %tr
+        %th Ориентировочная цена:
+        %td= form.text_field :cost    
+      %tr
+        %th Единица измерения:
+        %td= select :ware, "unit_id", Unit.all.collect {|u| [ u.name, u.id ] }
+    %br
+    = submit_tag "Создать"

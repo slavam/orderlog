@@ -1,0 +1,12 @@
+%h1 Создадь запись об услуге
+.content
+  = form_for @service do |form|
+    %table.card
+      %tr
+        %th Название:
+        %td= form.text_field :name
+      %tr
+        %th Номенклатурный номер:
+        %td= form.text_field :part_number
+    %br
+    = submit_tag submit

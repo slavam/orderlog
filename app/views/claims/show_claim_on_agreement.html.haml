@@ -1,0 +1,78 @@
+# coding: utf-8
+:css
+  td.red {color: #f00; }
+-@title = "Первичная заявка"
+%h2 Первичная заявка на согласовании
+.content
+  %table.card
+    %tr
+      %th Номер
+      %td= @claim.claim_number
+    %tr  
+      %th Направление
+      %td= @claim.direction.short_name
+    %tr  
+      %th Отделение
+      %td= @claim.branch_of_bank.name
+    %tr  
+      %th Статус
+      %td= @claim.state.state_name.name
+    %tr  
+      %th Создана
+      %td= @claim.create_date.to_date
+    %tr  
+      %th Период
+      %td= @claim.period.name
+  %table.data
+    %tr
+      %th Тип
+      %th Название
+      %th Цена
+      %th Количество
+      %th Сумма
+      %th Для кого
+      %th Статья бюджета
+      %th Примечание
+      %th 
+    - for c_l in @claim.claim_lines.order(:id)
+      %tr
+        %td= c_l.ware.ware_type.short_name
+        %td= (c_l.ware.asset_id ? c_l.ware.asset.name : c_l.ware.service.name )
+        - cost = c_l.ware.cost
+        %td= cost
+        %td= link_to c_l.count.to_s+' '+c_l.ware.unit.sign, :action => 'edit_quantity', :claim_line_id => c_l.id
+        %td= cost.to_f*c_l.count
+        - w = Worker.select("lastname, firstname, soname, id_emp, staff").where("id_emp = ?", c_l.for_whom).first
+        %td= w.lastname+' '+w.firstname[0,1]+'. '+w.soname[0,1]+'. '+w.staff
+        %td= link_to c_l.budget_item.name, :action => 'change_budget_item', :claim_line_id => c_l.id
+        %td= link_to c_l.description, :action => 'edit_description', :claim_line_id => c_l.id
+        %td= link_to "Удалить", :action => 'delete_claim_line', :claim_line_id => c_l.id
+  %table.data
+    %tr
+      %th Статья бюджета
+      %th Сумма бюджета
+      %th Сумма заявки
+      %th Отклонение
+    - for b_i in @grouped_lines
+      %tr
+        %td= b_i.name
+        %td= b_i.limit 
+        %td= b_i.item_sum
+        - d = b_i.limit.to_f - b_i.item_sum.to_f
+        - if d < 0
+          %td.red{style: 'text-align: right'}= number_with_precision(d, :precision => 2, :separator => '.')
+        - else
+          %td{style: 'text-align: right'}= number_with_precision(d, :precision => 2, :separator => '.')     
+.action
+  %br
+  -#= link_to "Внести изменения", edit_claim_path(@claim)  
+  %br
+  = link_to "Добавить материальную ценность", new_claim_line_path(:claim_id => @claim.id, :ware_type => 'asset')
+  %br
+  = link_to "Добавить услугу", new_claim_line_path(:claim_id => @claim.id, :ware_type => 'service')
+  %br
+  = link_to "Согласовано", :action => 'claim_state_change', :id => @claim.id
+  %br
+  = link_to "Согласовано с дирекцией", :action => 'claim_state_change', :id => @claim.id
+  %br
+  = link_to "История", :action => 'claim_history', :id => @claim.id

@@ -1,0 +1,46 @@
+development:
+  adapter: postgresql
+  database: orderlog_development
+  username: postgres
+  password: postgres
+#  host: localhost
+#  port: 5433
+  host: dev1-d00
+  port: 5432
+  encoding: UTF8
+
+findep:
+  adapter: oracle_enhanced
+  database: appbb.adir.vbr.ua:1521/XE
+  username: v_morhachov
+  password: v_morhachov
+
+#odb:
+#  adapter: oracle_enhanced
+#  database: ora3-i00:1661/SRBANK
+#  username: kpi
+#  password: MVM55010101
+
+personnel:
+  adapter: sqlserver
+  mode: odbc
+  dsn: sqlexpress
+  host: localhost
+  database: PxSuite
+  username: vbrdoc
+  password: 1q2w3e4r5t
+
+
+production:
+  adapter: postgresql
+  database: orderlog_production
+  username: postgres
+  password: postgres
+  host: localhost
+  encoding: UTF8
+
+#test:
+#  adapter: sqlite3
+#  database: db/test.sqlite3
+#  pool: 5
+#  timeout: 5000

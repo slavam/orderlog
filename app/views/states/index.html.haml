@@ -1,0 +1,14 @@
+# coding: utf-8
+-@title = "Состояния документов"
+%h2 Состояния документов
+.content
+  %table.data
+    %tr
+      %th Документ
+      %th Состояние
+    - for s in @states
+      %tr 
+        %td= s.document_type.name
+        %td= s.state_name.name
+.action
+  = link_to "Добавить", :action => 'new'

@@ -1,0 +1,28 @@
+%h1 Создадь строку в заявке
+.content
+  = form_for @claim_line do |form|
+    %table.card
+      %tr
+        %th Товар:
+        - wares = []
+        - if @ware_type == 'asset'
+          - wares = Ware.joins("join assets a on a.id=wares.asset_id and a.direction_id="+@claim.direction_id.to_s).where("ware_type_id=1")
+          - wt_id = 1
+        - else
+          - wares = Ware.joins("join services s on s.id=wares.service_id").where("ware_type_id=2")
+          - wt_id = 2
+        -#%td= select :claim_line, 'ware_id', wares.collect {|w| [name = (wt_id == 1 ? w.asset.name : w.service.name), w.id]}
+        %td= select :claim_line, 'asset_id', Asset.where("direction_id=?",@claim.direction_id).collect {|w| [w.name, w.id]}
+      %tr
+        %th Количество:
+        %td= form.text_field :count
+      %tr
+        %th Для кого:
+        %td= select :claim_line, 'for_whom', Worker.select("lastname, firstname, soname, id_emp").order(:lastname, :firstname, :soname).collect {|w| [w.lastname+' '+w.firstname+' '+w.soname, w.id_emp]}  
+      %tr
+        %th Примечание:
+        %td= form.text_field :description
+        %td= hidden_field_tag :claim_id, @claim.id
+        %td= hidden_field_tag :ware_type, @ware_type  
+    %br
+    = submit_tag submit

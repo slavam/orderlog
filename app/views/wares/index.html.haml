@@ -1,0 +1,22 @@
+# coding: utf-8
+-@title = "Товары"
+%h2 Товары
+.content
+  %table.data
+    %tr
+      %th Тип
+      %th Название
+      %th Ориентировочная цена
+    - for w in @wares
+      %tr 
+        %td= w.ware_type.short_name
+        - if w.ware_type_id == 1
+          %td= w.asset.name
+        - else  
+          %td= w.service.name
+        %td= w.cost  
+          
+.action
+  = link_to "Добавить МЦ", :action => 'new', :ware_type => 'asset'
+  %br
+  = link_to "Добавить услугу", :action => 'new', :ware_type => 'service'

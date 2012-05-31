@@ -1,0 +1,13 @@
+# coding: utf-8
+-@title = "Параметры консолидированной заявки" 
+%h2 Задайте параметры консолидированной заявки
+.content
+  = form_for :claim_params, :url => {:action => 'show_claim_consolidated'}, :method => :get do 
+    %table
+      %tr
+        %th Период:
+        %td= select :claim_params, 'period_id', Period.where("type_period = 'M' and date_from > to_date('2011-12-31', 'yyyy-mm-dd')").collect {|d| [d.name, d.id]}
+      %tr
+        %th Направление:
+        %td= select :claim_params, 'direction_id', Direction.all.collect {|d| [d.name, d.id]}
+    = submit_tag "Просмотреть"

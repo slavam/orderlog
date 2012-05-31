@@ -1,0 +1,13 @@
+# coding: utf-8
+-@title = "Группы материальных ценностей"
+%h2 Группы материальных ценностей
+.content
+  %table.data
+    %tr
+      %th Название
+    - for g in @groups
+      %tr 
+        %td= g.name
+          
+.action
+  = link_to "Добавить", :action => 'new'

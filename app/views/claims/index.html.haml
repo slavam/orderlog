@@ -1,0 +1,24 @@
+# coding: utf-8
+-@title = "Заявки"
+%h2 Заявки
+.content
+  %table.data
+    %tr
+      %th Номер
+      %th Создана
+      %th Направление
+      %th Статус
+      %th Отделение
+      %th
+    - for c in @claims
+      %tr 
+        %td= link_to c.claim_number, claim_path(c.id)
+        %td= c.create_date.to_date
+        %td= c.direction.short_name
+        %td= c.state.state_name.name
+        %td= c.branch_of_bank.name
+        %td= link_to "Удалить", :action => 'delete_claim', :id => c.id
+.action
+  = link_to "Добавить", :action => 'new'
+  %br
+  = link_to "Просмотреть консолидированные заявки", :action => 'get_consolidated_climes_params'

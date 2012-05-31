@@ -1,0 +1,13 @@
+# coding: utf-8
+-@title = "Услуга"
+%h2 Услуга
+.content
+  %table.card
+    %tr
+      %th Название
+      %td= @service.name
+    %tr  
+      %th Номенклатурный номер
+      %td= @service.part_number
+-#.action
+  -#= link_to "Добавить", :action => 'new'

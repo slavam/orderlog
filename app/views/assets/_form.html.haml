@@ -1,0 +1,33 @@
+%h1
+  = submit
+  запись о материальной ценности/услуге
+.content
+  = form_for @asset do |form|
+    %table.card
+      %tr
+        %th Тип:
+        %td= select :asset, 'ware_type_id', WareType.all.collect {|d| [d.name, d.id]}
+      %tr
+        %th Название:
+        %td= form.text_field :name, :size => 50
+      %tr
+        %th Номенклатурный номер:
+        %td= form.text_field :part_number, :size => 20
+      %tr
+        %th Предполагаемая статья бюджета:
+        %td= select :asset, 'budget_item_id', @budget_items.collect {|bi| [bi.code+' '+((bi.isleaf == 1 and bi.parent_id != 153 and bi.parent_id != 488) ? '___':'')+bi.name, bi.id]}
+      %tr
+        %th Предварительная цена
+        %td= form.text_field :cost, :size => 10
+      %tr
+        %th Направление:
+        %td= select :asset, 'direction_id', Direction.all.collect {|d| [d.name, d.id]}
+      %tr
+        %th Группа:
+        %td= select :asset, 'asset_group_id', @groups.collect {|g| [g.name, g.id]}
+      %tr
+        %th Дополнительная информация
+        %td= form.text_field :info, :size => 100
+        
+    %br
+    = submit_tag submit

@@ -1,0 +1,17 @@
+# coding: utf-8
+-@title = "Подразделения банка"
+%h2 Подразделение "#{@department.division}"
+- if @parent
+  %h3 Родитель: "#{link_to @parent.division, :action => 'show_branches_of_division', :id => @parent.id_division}"
+- if @branches.size > 0  
+  %h3 Потомки:
+  .content
+    %table.data
+      %tr
+        %th Название
+        %th Код
+      - for sd in @branches
+        %tr 
+          %td= link_to sd.division, subdivision_path(sd.id_division)
+          %td= sd.code_division
+  = will_paginate @branches        

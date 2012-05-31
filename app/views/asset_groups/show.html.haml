@@ -1,0 +1,13 @@
+# coding: utf-8
+-@title = "Материальная ценность"
+%h2 Материальная ценность
+.content
+  %table.card
+    %tr
+      %th Название
+      %td= @asset.name
+    %tr  
+      %th Номенклатурный номер
+      %td= @asset.part_number
+-#.action
+  -#= link_to "Добавить", :action => 'new'

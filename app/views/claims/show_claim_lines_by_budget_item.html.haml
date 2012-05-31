@@ -1,0 +1,25 @@
+# coding: utf-8
+:css
+  td.red {color: #f00; }
+-@title = "Заказы по статье бюджета"
+%h2 Заказы по статье бюджета
+%h3 Статья бюджета: #{@article.name}
+%h3 Направление: #{@claim_lines[0].claim.direction.name}
+%h3 Период: #{@claim_lines[0].claim.period.name}
+.content
+  %table.data
+    %tr
+      %th Заявка
+      %th Товар
+      %th Количество
+      %th Сумма по заявке
+      - for cl in @claim_lines
+        %tr
+          %td= link_to cl.claim.claim_number, claim_path(cl.claim.id)
+          - if cl.ware.ware_type_id == 1
+            - w_n = cl.ware.asset.name
+          - else
+            - w_n = cl.ware.service.name
+          %td= w_n
+          %td= cl.count
+          %td= cl.amount

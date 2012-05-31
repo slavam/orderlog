@@ -1,0 +1,28 @@
+# coding: utf-8
+-@title = "Материальные ценности/услуги"
+%h2 Материальные ценности/услуги
+.content
+  %table.data
+    %tr
+      %th Тип
+      %th Группа
+      %th Название
+      %th Номенклатурный номер
+      %th Предполагаемая статья бюджета
+      %th Цена
+      -#%th Направление
+    - for a in @assets
+      %tr 
+        %td= a.ware_type.short_name
+        %td= (a.asset_group ? a.asset_group.name : '')
+        %td= link_to a.name, edit_asset_path(a.id)
+        %td= link_to a.part_number, asset_path(a.id)
+        - if a.budget_item
+          %td= '('+a.budget_item.code+') '+a.budget_item.name
+        - else
+          %td= "Вне бюджета"  
+        %td= a.cost
+        -#%td= a.direction.name
+= will_paginate @assets        
+.action
+  = link_to "Добавить", :action => 'new'

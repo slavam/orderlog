@@ -1,0 +1,12 @@
+%h1 Создадь состояние документа
+.content
+  = form_for @state do |form|
+    %table.card
+      %tr
+        %th Документ:
+        %td= select :state, "document_type_id", DocumentType.all.collect {|d| [ d.name, d.id ] }
+      %tr
+        %th Состояние:
+        %td= select :state, "state_name_id", StateName.all.collect {|s| [ s.name, s.id ] }
+    %br
+    = submit_tag "Создать"

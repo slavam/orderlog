@@ -1,0 +1,16 @@
+# coding: utf-8
+%h1 Данные о подразделении 
+
+.content
+  %table.data
+    %tr
+      %th Идентификатор:
+      %td= @department.id_division
+    %tr
+      %th Код:
+      %td= @department.code_division
+    %tr
+      %th Название:  
+      - for r in @componames
+        %td= link_to r.division, :action => 'show_branches_of_division', :id => r.id_division
+      
