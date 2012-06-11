@@ -2,7 +2,15 @@
 class AssetsController < ApplicationController
   before_filter :find_asset, :only => [:edit, :update, :show]
   def index
-    @assets = Asset.order(:name).paginate :page => params[:page], :per_page => 20
+    query = "select wt.short_name as short_name, a.cost as cost, a.part_number as part_number, a.name as name, 
+      ag.name as group_name, a.budget_item_id as budget_item_id, a.id as id 
+      from assets a
+      join asset_groups ag on ag.id=a.asset_group_id
+      join ware_types wt on wt.id=a.ware_type_id
+      order by ag.name, a.name"
+    @assets = Asset.find_by_sql(query)  
+#    @assets = Asset.order(:asset_group_id, :name)
+#    .paginate :page => params[:page], :per_page => 20
   end
 
   def show

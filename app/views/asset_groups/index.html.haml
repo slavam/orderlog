@@ -4,10 +4,12 @@
 .content
   %table.data
     %tr
+      %th Супергруппа
       %th Название
     - for g in @groups
       %tr 
-        %td= g.name
+        %td= (g.block_id ? g.block.name : '')
+        %td= link_to g.name, edit_asset_group_path(g.id)
           
 .action
   = link_to "Добавить", :action => 'new'

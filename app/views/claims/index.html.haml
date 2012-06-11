@@ -5,18 +5,22 @@
   %table.data
     %tr
       %th Номер
-      %th Создана
+      %th Период
       %th Направление
       %th Статус
       %th Отделение
+      %th{style: 'width: 300px;'} Комментарий
       %th
+      %th  
     - for c in @claims
       %tr 
         %td= link_to c.claim_number, claim_path(c.id)
-        %td= c.create_date.to_date
+        %td= c.period.name
         %td= c.direction.short_name
         %td= c.state.state_name.name
         %td= c.branch_of_bank.name
+        %td= c.comment
+        %td= link_to "Изменить", :action => 'edit', :id => c.id
         %td= link_to "Удалить", :action => 'delete_claim', :id => c.id
 .action
   = link_to "Добавить", :action => 'new'

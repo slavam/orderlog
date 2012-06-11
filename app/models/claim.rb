@@ -1,5 +1,5 @@
 class Claim < ActiveRecord::Base
-  attr_accessible :direction_id, :claim_number, :division_id, :period_id
+  attr_accessible :direction_id, :claim_number, :division_id, :period_id, :comment, :create_date
   has_many :claim_lines, :dependent => :destroy
   has_many :claim_histories
   belongs_to :branch_of_bank, :class_name => 'BranchOfBank', :foreign_key => 'division_id'

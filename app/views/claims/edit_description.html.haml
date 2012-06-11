@@ -4,7 +4,7 @@
     %table.card
       %tr
         %th Примечание:
-        %td= form.text_field :description
+        %td= form.text_field :description, :size => 100
         %td= hidden_field_tag :claim_line_id, @claim_line.id
     %br
     = submit_tag "Изменить"

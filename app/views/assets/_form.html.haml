@@ -1,6 +1,6 @@
 %h1
   = submit
-  запись о материальной ценности/услуге
+  запись
 .content
   = form_for @asset do |form|
     %table.card
@@ -19,6 +19,9 @@
       %tr
         %th Предварительная цена
         %td= form.text_field :cost, :size => 10
+      %tr
+        %th Единица измерения:
+        %td= select :asset, 'unit_id', Unit.all.collect {|u| [u.name, u.id]}
       %tr
         %th Направление:
         %td= select :asset, 'direction_id', Direction.all.collect {|d| [d.name, d.id]}

@@ -1,0 +1,13 @@
+# coding: utf-8
+-@title = "Супергруппы"
+%h2 Супергруппы
+.content
+  %table.data
+    %tr
+      %th Название
+    - for b in @blocks
+      %tr 
+        %td= link_to b.name, edit_block_path(b.id)
+          
+.action
+  = link_to "Добавить", :action => 'new'

@@ -10,7 +10,7 @@ class BudgetItem < Commerce
     budget_items = []
     budget_items[0] = BudgetItem.new
     budget_items[0].id = 0
-    budget_items[0].name = 'Вне бюджета' 
+    budget_items[0].name = 'Без статьи бюджета' 
     budget_items[0].code = ''
     budget_items[0][:isleaf] = 0
     budget_items[0].parent_id = 0

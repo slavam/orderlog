@@ -1,6 +1,6 @@
 # coding: utf-8
 -@title = "Материальная ценность/услуга"
-%h2 Материальная ценность/услуга
+%h2= @asset.ware_type.name
 .content
   %table.card
     %tr
@@ -11,7 +11,7 @@
       %td= @asset.name
     %tr
       %th Группа
-      %td= (@asset.asset_group ? @asset.asset_group.name : 'Не указана')
+      %td= (@asset.asset_group ? (@asset.asset_group.block ? @asset.asset_group.block.name+"=>" : '')+@asset.asset_group.name : 'Не указана')
     %tr  
       %th Номенклатурный номер
       %td= @asset.part_number
@@ -19,8 +19,18 @@
       %th Цена
       %td= @asset.cost
     %tr  
+      %th Единица измерения
+      %td= @asset.unit.sign
+    %tr  
       %th Статья бюджета
-      %td= @asset.budget_item.name+' ('+@asset.budget_item.code+')'
+      - if @asset.budget_item
+        - parent = ''
+        - if @asset.budget_item.parent_id
+          - parent = BudgetItem.find(@asset.budget_item.parent_id).name
+          %td= parent+"=>"
+        %td= @asset.budget_item.name+' ('+@asset.budget_item.code+')'
+      - else
+        %td= "Без статьи бюджета"  
     %tr  
       %th Направление
       %td= @asset.direction.name

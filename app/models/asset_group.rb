@@ -1,6 +1,7 @@
 # coding: utf-8
 class AssetGroup < ActiveRecord::Base
-  attr_accessible :name
+  attr_accessible :name, :block_id
+  belongs_to :block
   has_many :assets
   def self.get_full_groups
     groups = []

@@ -1,0 +1,22 @@
+# coding: utf-8
+:css
+  td.red {color: #f00; }
+-@title = "Лимиты"
+%h2 Лимиты для заявки #{@claim.claim_number} 
+%h3 Отделение: #{@claim.branch_of_bank.name}
+%h3 Период: #{@claim.period.name}
+.content
+  %table.data
+    %tr
+      %th Лимит
+      %th Код
+      %th Статья
+      %th Бизнес
+      - for l in @limits
+        %tr
+          -#%td= l.value*(l.sign ? 1 : -1)
+          %td= l.limit
+          %td= l.code
+          %td= l.article
+          %td= l.business
+          -#%td= link_to cl.claim.claim_number, claim_path(cl.claim.id)

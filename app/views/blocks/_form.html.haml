@@ -1,0 +1,9 @@
+%h1= submit +" супергруппу"
+.content
+  = form_for @block do |form|
+    %table.card
+      %tr
+        %th Супергруппа:
+        %td= form.text_field :name    
+    %br
+    = submit_tag submit

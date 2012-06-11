@@ -23,11 +23,13 @@ Orderlog::Application.routes.draw do
   resources :claims do
     collection do
       get :delete_claim_line, :show_claim_on_agreement, :change_budget_item, :delete_claim, :claim_state_change, :claim_history,
-        :edit_quantity, :edit_description, :get_consolidated_climes_params, :show_claim_consolidated, :show_claim_lines_by_budget_item
+        :edit_quantity, :edit_description, :get_consolidated_climes_params, :show_claim_consolidated, 
+        :show_claim_lines_by_budget_item, :show_limits
 #      post :claim_state_change
     end
   end
   resources :asset_groups
+  resources :blocks
 
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'

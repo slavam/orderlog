@@ -1,9 +1,12 @@
-%h1 Создадь группу
+%h1= submit +" группу"
 .content
   = form_for @asset_group do |form|
     %table.card
       %tr
+        %th Супергруппа:
+        %td= select :asset_group, 'block_id', Block.all.collect {|b| [b.name, b.id]}    
+      %tr
         %th Группа:
         %td= form.text_field :name    
     %br
-    = submit_tag "Создать"
+    = submit_tag submit

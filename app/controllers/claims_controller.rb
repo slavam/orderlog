@@ -1,43 +1,31 @@
 # coding: utf-8
 class ClaimsController < ApplicationController
   FIN_OWNER = 'FIN'
-  before_filter :find_claim, :only => [:show, :claim_state_change, :delete_claim, :claim_history, :edit]
+  before_filter :find_claim, :only => [:show, :claim_state_change, :delete_claim, :claim_history, :edit, :update]
   before_filter :find_claim_line, :only => [:change_budget_item, :edit_quantity, :edit_description]
   def index
-    @claims = Claim.order(:create_date)
+    @claims = Claim.order(:period_id, :direction_id, :division_id, :id)
   end
 
   def show
-    if @claim.state.state_name.name == "На согласовании"
-#      lines = @claim.claim_lines.select(:budget_item_id).uniq
+    if (@claim.state.state_name.name == "На согласовании") or (@claim.state.state_name.name == "Согласовано")
       @grouped_lines = @claim.claim_lines.select("budget_item_id, sum(amount) as item_sum, 'name' as name, 0 as limit").group(:budget_item_id)
       @grouped_lines.each {|l|
-        query = "select value, bd.name as name from "+FIN_OWNER+".budget_value v
-          join "+FIN_OWNER+".division d on d.id=v.division_id and d.id="+@claim.division_id.to_s+
-          " join "+FIN_OWNER+".periods p on p.id=v.periods_id and p.id="+@claim.period_id.to_s+
-          " join "+FIN_OWNER+".budget_directory bd on v.budget_factor_id=bd.id where v.budget_flag_correction_id = 1 and bd.id="+
-          l[:budget_item_id].to_s
-        bi = BudgetItem.find_by_sql(query).first
-        l.name = BudgetItem.find(l[:budget_item_id]).name
-        l.limit = (bi ? bi[:value]: 0)
-#        l.name = (bi[0] ? bi[0][:name]: '')
-#        l.limit = (bi[0] ? bi[0][:value]: 0)
-        }
-#      budget_item_ids = Array.new
-#      lines.each {|bi| budget_item_ids << bi[:budget_item_id]}
-#      @budget_items = BudgetItem.where("id in ("+budget_item_ids.join(',')+")")
-#      p budget_item_ids.join(',')+">>>>>>>>>>>>>>>>>>>>>>>>"
-
-#select sum(amount)
-#from claim_lines cl
-#where claim_id = 2
-#group by budget_item_id
-#
-#      query ="
-#        select * from "+FIN_OWNER+".budget_value v
-#        join "+FIN_OWNER+".division d on d.id=v.division_id and d.code='003'
-#        join "+FIN_OWNER+".periods p on p.id=v.periods_id and p.type_period='M' and p.date_from=to_date('01-04-2012','dd-mm-yyyy')
-#        join "+FIN_OWNER+".budget_directory bd on v.budget_factor_id=bd.id and bd.id=532"
+        if l[:budget_item_id]!=0
+          query = "select value*bd.sign as value, bd.name as name from "+FIN_OWNER+".budget_value bv
+            join "+FIN_OWNER+".budget_factor bf on bf.id=bv.budget_factor_id
+            join "+FIN_OWNER+".budget_directory bd on bd.id=bf.budget_directory_id and bd.budget_groups_id in (7,9)
+            -- join FIN.budget_business bb on bb.id=bf.budget_business_id
+            where bv.budget_flag_correction_id=1 and bv.division_id="+@claim.division_id.to_s+
+            " and bv.periods_id="+@claim.period_id.to_s+" and bd.id="+l[:budget_item_id].to_s
+          bi = BudgetItem.find_by_sql(query).first
+          l.name = BudgetItem.find(l[:budget_item_id]).name
+          l.limit = (bi ? bi[:value]: 0)
+        else
+          l.name = "Без статьи бюджета"
+          l.limit = 0
+        end  
+      }
       render 'show_claim_on_agreement'
     end
   end
@@ -47,10 +35,11 @@ class ClaimsController < ApplicationController
   end
 
   def create
-    @claim = Claim.new params[:claim]
-    @claim.create_date = Time.now
+    params[:claim][:create_date] = Time.now
+    @claim = Claim.create(params[:claim])
     @claim.budgetary = true
     @claim.state_id = 1 # первичная заявка -> черновик
+    @claim.claim_number = @claim.direction.stamp+@claim.id.to_s
     if not @claim.save
       render :new
     else
@@ -60,6 +49,19 @@ class ClaimsController < ApplicationController
       claim_history.change_at = Time.now
       claim_history.save
       redirect_to claim_path @claim
+    end
+  end
+  
+  def edit
+  end
+
+  def update
+    @claim.update_attributes params[:claim]
+    
+    if not @claim.save
+      render :edit
+    else
+      redirect_to claims_path
     end
   end
   
@@ -126,15 +128,11 @@ class ClaimsController < ApplicationController
       group by cl.budget_item_id"
     @claim_lines = Claim.find_by_sql(query)
     @claim_lines.each {|cl|
-      query ="select sum(bv.value) as limit from FIN.budget_value bv
-        join FIN.budget_directory bd on bd.id=bv.budget_factor_id
-        join FIN.division d on d.id=bv.division_id
-          and d.id in ("+division_ids.join(',')+")
-        join FIN.periods p on p.id=bv.periods_id 
-          and p.id="+@period.id.to_s+"
-      where bv.budget_factor_id="+cl.budget_item_id.to_s+"
-        and bv.budget_flag_correction_id = 1
-      group by bd.name"
+      query = "select sum(bv.value*bd.sign) as limit from FIN.budget_value bv
+        join FIN.budget_factor bf on bf.id=bv.budget_factor_id
+        join FIN.budget_directory bd on bd.id=bf.budget_directory_id and bd.budget_groups_id in (7,9)
+        -- join FIN.budget_business bb on bb.id=bf.budget_business_id
+        where bv.budget_flag_correction_id=1 and bv.division_id in ("+division_ids.join(',')+") and bv.periods_id="+@period.id.to_s
       budget_limit = BudgetItem.find_by_sql(query).first
       b_i = BudgetItem.select("name, id").find cl.budget_item_id
       cl.article = b_i.name
@@ -151,6 +149,24 @@ class ClaimsController < ApplicationController
       " where budget_item_id="+params[:budget_item_id]
     @claim_lines = ClaimLine.find_by_sql(query)
   end
+  
+  def show_limits
+    @claim = Claim.find params[:claim_id]
+    budget_item_ids = [] 
+    @claim.claim_lines.each {|cl| budget_item_ids << cl.budget_item_id}
+    b_i_ids = budget_item_ids.join(',')
+#    @division = BranchOfBank.find claim.division_id
+#    @period = Period.find claim.period_id
+    query = "select bv.value*bd.sign as limit, bd.name as article, bb.name as business, bd.code as code 
+      from "+FIN_OWNER+".budget_value bv
+      join "+FIN_OWNER+".budget_factor bf on bf.id=bv.budget_factor_id
+      join "+FIN_OWNER+".budget_directory bd on bd.id=bf.budget_directory_id and bd.budget_groups_id in (7,9) and
+        bd.id in ("+b_i_ids+")
+      join "+FIN_OWNER+".budget_business bb on bb.id=bf.budget_business_id
+      where bv.budget_flag_correction_id=1 and bv.division_id="+
+      @claim.division_id.to_s+" and bv.periods_id="+@claim.period_id.to_s
+    @limits = BudgetItem.find_by_sql(query)
+  end
 private
   def find_claim_line
     @claim_line = ClaimLine.find params[:claim_line_id]
@@ -158,5 +174,22 @@ private
   def find_claim
     @claim = Claim.find params[:id]
   end    
+=begin
+select * from FIN.budget_value bv
+join FIN.budget_factor bf on bf.id=bv.budget_factor_id
+join FIN.budget_directory bd on bd.id=bf.budget_directory_id and bd.budget_groups_id in (7,9)
+join FIN.budget_business bb on bb.id=bf.budget_business_id
+where bv.budget_flag_correction_id=1 and bv.division_id=3 and bv.periods_id=1846
+-- использовать поле sign => bv.value*bd.sign  
 
+Рекурсия для Postgresql
+
+WITH RECURSIVE temp1 ( id, parent_id, name, PATH, LEVEL ) AS (
+SELECT T1.id, T1.parent_id, T1.name, CAST (T1.id AS VARCHAR(50)) as PATH, 1
+    FROM groups T1 WHERE T1.parent_id IS NULL
+union
+select T2.id, T2.parent_id, T2.name, CAST ( temp1.PATH ||'->'|| T2.id AS VARCHAR(50)) ,LEVEL + 1
+     FROM groups T2 INNER JOIN temp1 ON( temp1.id= T2.parent_id)      )
+select * from temp1 ORDER BY PATH LIMIT 100
+=end
 end

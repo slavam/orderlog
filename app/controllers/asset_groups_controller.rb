@@ -1,12 +1,13 @@
 # coding: utf-8
 class AssetGroupsController < ApplicationController
-  
+  before_filter :find_asset_group, :only => [:show, :edit, :update]      
   def index
-    @groups = AssetGroup.order(:id).paginate :page => params[:page], :per_page => 20
+    @groups = AssetGroup.order(:block_id,:name)
+    #.paginate :page => params[:page], :per_page => 20
   end
 
   def show
-    @group = AssetGroup.find params[:id]  
+      
   end
   
   def new
@@ -20,5 +21,20 @@ class AssetGroupsController < ApplicationController
     else
       redirect_to asset_groups_path
     end
+  end
+  
+  def edit
+    
+  end
+  def update
+    if not @asset_group.update_attributes params[:asset_group]
+      render :action => :edit
+    else
+      redirect_to asset_groups_path
+    end
+  end
+private
+  def find_asset_group
+    @asset_group = AssetGroup.find params[:id] 
   end
 end
