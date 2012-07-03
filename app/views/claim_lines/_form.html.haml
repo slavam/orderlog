@@ -4,7 +4,7 @@
     %table.card
       %tr
         %th Товар:
-        %td= select :claim_line, 'asset_id', Asset.where("direction_id=?",@claim.direction_id).collect {|w| [w.name, w.id]}
+        %td= select :claim_line, 'asset_id', Asset.where("direction_id=?",@claim.direction_id).order(:name).collect {|w| [w.name, w.id]}
       %tr
         %th Количество:
         %td= form.text_field :count
@@ -15,16 +15,18 @@
         %th Примечание:
         %td= form.text_field :description, :size => 100
         %td= hidden_field_tag :claim_id, @claim.id
-      - if @claim.state.state_name.name != "Черновик"  
+      %tr
+        %th Бизнес:
+        %td= select :claim_line, 'business_id', Business.order(:id).collect {|b| [b.name, b.id]}  
+      - if submit == "Изменить"
         %tr
-          %th Бизнес:
-          %td= select :claim_line, 'business_id', Business.order(:id).collect {|b| [b.name, b.id]}  
-        - if submit == "Изменить"
-          %tr
-            %th Цена:
-            %td= form.text_field :cost
-          %tr
-            %th Статья бюджета:
-            %td= select :claim_line, 'budget_item_id', @budget_items.collect {|bi| [bi.code+' '+((bi.isleaf == 1 and bi.parent_id != 153 and bi.parent_id != 488) ? '___':'')+bi.name, bi.id]}
+          %th Цена:
+          %td= form.text_field :cost
+        %tr
+          %th Статья бюджета:
+          %td= select :claim_line, 'budget_item_id', @budget_items.collect {|bi| [bi.code+' '+((bi.isleaf == 1 and bi.parent_id != 153 and bi.parent_id != 488) ? '___':'')+bi.name, bi.id]}
+      %tr
+        %th Статус:
+        %td= select :claim_line, 'status_id', Status.order(:id).collect {|s| [s.name, s.id]}  
     %br
     = submit_tag submit

@@ -35,6 +35,7 @@ class ClaimsController < ApplicationController
   end
 
   def create
+    params[:claim][:claim_number] = ''
     params[:claim][:create_date] = Time.now
     @claim = Claim.create(params[:claim])
     @claim.budgetary = true

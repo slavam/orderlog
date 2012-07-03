@@ -26,6 +26,9 @@
         %th Направление:
         %td= select :asset, 'direction_id', Direction.all.collect {|d| [d.name, d.id]}
       %tr
+        %th Тип цены:
+        %td= select :asset, 'price_type_id', PriceType.all.collect {|p| [p.name, p.id]}
+      %tr
         %th Группа:
         %td= select :asset, 'asset_group_id', @groups.collect {|g| [g.name, g.id]}
       %tr

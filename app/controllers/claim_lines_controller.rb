@@ -10,6 +10,7 @@ class ClaimLinesController < ApplicationController
   
   def new
     @claim_line = ClaimLine.new
+    @claim_line.business_id = 9 # по умолчанию - Общебанк
     @claim = Claim.find params[:claim_id]
     @budget_items = BudgetItem.find_budget_items
   end
@@ -39,6 +40,10 @@ class ClaimLinesController < ApplicationController
 #    claim_line.update_attributes params[:claim_line]
     claim_line = ClaimLine.find params[:id]
     claim_line.update_attributes params[:claim_line]
+    a = Asset.find(claim_line.asset_id)
+    if not claim_line.cost
+      claim_line.cost = a.cost ? a.cost : 0
+    end  
     claim_line.amount = claim_line.count*claim_line.cost
     
     claim_line.save

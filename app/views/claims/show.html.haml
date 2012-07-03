@@ -21,12 +21,21 @@
     %tr  
       %th Создана
       %td= @claim.create_date.to_date
+    %tr  
+      %th Комментарий
+      %td= @claim.comment
+    %tr  
+      %th Описание
+      %td= @claim.description
   %table.data
     %tr
       %th Тип
       %th Название
+      %th Цена
       %th Количество
+      %th Сумма
       %th Для кого
+      %th Бизнес
       %th Примечание
       %th Информация
       %th 
@@ -35,9 +44,12 @@
       %tr
         %td= c_l.asset.ware_type.short_name
         %td= link_to c_l.asset.name, asset_path(c_l.asset.id)
+        %td= c_l.asset.cost
         %td= c_l.count.to_s+' '+c_l.asset.unit.sign
+        %td= c_l.amount
         - w = Worker.select("lastname, firstname, soname, id_emp, staff").where("id_emp = ?", c_l.for_whom).first
         %td= w.lastname+' '+w.firstname[0,1]+'. '+w.soname[0,1]+'. '+w.staff
+        %td= c_l.business.name
         %td= c_l.description
         %td= c_l.asset.info
         %td= link_to "Изменить", edit_claim_line_path(:id => c_l.id)

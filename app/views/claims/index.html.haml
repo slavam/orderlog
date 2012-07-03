@@ -6,7 +6,7 @@
     %tr
       %th Номер
       %th Период
-      %th Направление
+      -#%th Направление
       %th Статус
       %th Отделение
       %th{style: 'width: 300px;'} Комментарий
@@ -16,7 +16,7 @@
       %tr 
         %td= link_to c.claim_number, claim_path(c.id)
         %td= c.period.name
-        %td= c.direction.short_name
+        -#%td= c.direction.short_name
         %td= c.state.state_name.name
         %td= c.branch_of_bank.name
         %td= c.comment

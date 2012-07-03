@@ -26,6 +26,12 @@
     %tr  
       %th Период
       %td= @claim.period.name
+    %tr  
+      %th Комментарий
+      %td= @claim.comment
+    %tr  
+      %th Описание
+      %td= @claim.description
   %table.data
     %tr
       %th Тип
@@ -36,6 +42,7 @@
       %th Для кого
       %th Бизнес
       %th Статья бюджета
+      %th Статус
       %th Информация
       %th Примечание
       - if @claim.state.state_name.name != "Согласовано"
@@ -45,7 +52,7 @@
       %tr
         %td= c_l.asset.ware_type.short_name
         %td= link_to c_l.asset.name, asset_path(c_l.asset.id)
-        %td= c_l.asset.cost
+        %td= c_l.cost
         %td= c_l.count.to_s+' '+c_l.asset.unit.sign
         %td= c_l.amount
         - w = Worker.select("lastname, firstname, soname, id_emp, staff").where("id_emp = ?", c_l.for_whom).first
@@ -56,6 +63,7 @@
         - else  
           - bi_name = "Без статьи бюджета"
         %td= bi_name
+        %td= c_l.status.name
         %td= c_l.asset.info  
         %td= c_l.description
         -#%td= link_to (c_l.description>''? c_l.description : "Добавить"), :action => 'edit_description', :claim_line_id => c_l.id
